@@ -10,7 +10,37 @@ class AutomationIndex:
 
 # A class representing an Automation
 class Automation:
+    """
+    The Automation class represents an automation that evaluates a condition to execute an action.
+    ...
+
+    Attributes
+    ----------
+        name: str
+            Automation name. e.g: 'open_lights'
+        enabled: bool
+            Whether the automation should be evaluated or not. e.g: True->Enabled, False->Disabled
+        condition: function (closure)
+            A condition function to be evaluated
+        condition_entities: list
+            A list of references to Entity objects involved in the condition function
+        action: function (closure)
+            An action function to execute in response the successful evaluation of the condition() function
+
+    Methods
+    -------
+        evaluate(self): Evaluates the Automation's conditions and runs the actions. Meant to be run by the
+            update_state() function in the Entities listed in condition_entities upon them updating their states.
+    """
     def __init__(self, name, enabled, condition, condition_entities, action):
+        """
+        Creates and returns an Automation object
+        :param name: Automation name. e.g: 'open_lights'
+        :param enabled: Whether the automation should be evaluated or not. e.g: True->Enabled, False->Disabled
+        :param condition: A condition function to be evaluated
+        :param condition_entities: A list of references to Entity objects involved in the condition function
+        :param action: An action function to execute in response the successful evaluation of the condition() function
+        """
         # Automation name
         self.name = name
         # Boolean variable indicating if the Automation is enabled and should be evaluated
@@ -31,6 +61,11 @@ class Automation:
 
     # Evaluate the Automation's conditions and run the actions
     def evaluate(self):
+        """
+            Evaluates the Automation's conditions in the enabled is True and runs the actions. Meant to be run by the
+            update_state() function in the Entities listed in condition_entities upon them updating their states.
+        :return:
+        """
         if self.enabled:
             if self.condition():
                 return self.action()
