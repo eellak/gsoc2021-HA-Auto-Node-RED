@@ -1,11 +1,12 @@
 # An index of all current Automations
 class AutomationIndex:
-    # Array with references to all entities
-    automation_index = []
+    # Dictionary with references to all automations
+    automation_index = {}
 
     # Add an Entity to the index
-    def add_automation(self, new_automation):
-        self.automation_index.append(new_automation)
+    def add_automation(self, name, new_automation):
+        if name not in self.automation_index:
+            self.automation_index[name] = new_automation
 
 
 # A class representing an Automation
@@ -57,7 +58,7 @@ class Automation:
         # Array of Entities involved in the action
         # self.action_entities = action_entities
         # Add Automation to AutomationIndex
-        AutomationIndex.add_automation(AutomationIndex, self)
+        AutomationIndex.add_automation(self=AutomationIndex, name=self.name, new_automation=self)
 
     # Evaluate the Automation's conditions and run the actions
     def evaluate(self):

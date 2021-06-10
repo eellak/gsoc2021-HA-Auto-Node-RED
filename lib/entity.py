@@ -4,12 +4,13 @@ from commlib.transports.mqtt import ConnectionParameters, Credentials
 
 # An index of all current Entities
 class EntityIndex:
-    # Array with references to all entities
-    entityIndex = []
+    # Dictionary with references to all entities
+    entityIndex = {}
 
     # Add an Entity to the index
-    def add_entity(self, new_entity):
-        self.entityIndex.append(new_entity)
+    def add_entity(self, name, new_entity):
+        if name not in self.entityIndex:
+            self.entityIndex[name] = new_entity
 
 
 # A class representing an entity communicating via an MQTT broker on a specific topic
@@ -74,7 +75,7 @@ class Entity:
         self.automations = []
 
         # Add a reference of this Entity in the EntityIndex
-        EntityIndex.add_entity(EntityIndex, self)
+        EntityIndex.add_entity(self=EntityIndex, name=self.name, new_entity=self)
 
         # Create and start MQTT subscriber and related data
         self.host = host
