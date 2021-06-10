@@ -1,24 +1,21 @@
 from lib.entity import Entity, EntityIndex
 from lib.automation import Automation, AutomationIndex
+import config as cfg
 
 if __name__ == '__main__':
-    # MQTT Broker Config
-    host = 'HOST_IP'
-    username = 'BROKER_USERNAME'
-    password = 'BROKER_PASSWORD'
 
     # Create sensor Entities
     temp_sensor = Entity(name='temperature_sensor',
                          topic='mqtt_sensors.temperature_sensor',
-                         host=host,
-                         username=username,
-                         password=password)
+                         host=cfg.mqtt["host"],
+                         username=cfg.mqtt["username"],
+                         password=cfg.mqtt["password"])
 
     status_sensor = Entity(name='status_sensor',
                            topic='mqtt_sensors.status_sensor',
-                           host=host,
-                           username=username,
-                           password=password)
+                           host=cfg.mqtt["host"],
+                           username=cfg.mqtt["username"],
+                           password=cfg.mqtt["password"])
 
     # Create Automation actions and conditions using closures
     def automation_action_generator(sensor):
@@ -39,7 +36,7 @@ if __name__ == '__main__':
                             action=automation_action_generator(status_sensor))
 
     """
-        To test that everything works as intended just push an MQTT message to the qtt_sensors/temperature_sensor topic
+        To test that everything works as intended just push an MQTT message to the mqtt_sensors/temperature_sensor topic
         with a temperature value > 10 and see if status_sensor's status changes to altered.
         
         Example message:
