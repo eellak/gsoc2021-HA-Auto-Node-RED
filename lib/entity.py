@@ -40,13 +40,22 @@ class Entity:
         conn_params: ConnectionParameters object from commlib-py
         mqtt_sub: MQTT subscriber object from commlib-py
 
+    Methods
+    -------
+        add_automation(self, automation): Adds an Automation reference to this Entity. Meant to be called by the
+            Automation constructor
+        update_state(self, new_state): Function for updating Entity state and triggering automations evaluation. Meant
+            to be used as a callback function by the Entity's mqtt_sub MQTT subscriber object (commlib-py).
+
+
 
     """
     def __init__(self, name, topic, host, username, password):
         """
         Creates and returns an Entity object
         :param name: Entity name. e.g: 'temperature_sensor'
-        :param topic: MQTT topic on which entity communicates. e.g: 'sensors.temp_sensor' correspons to topic sensors/temp_sensor
+        :param topic: MQTT topic on which entity communicates. e.g: 'sensors.temp_sensor' corresponds to topic
+            sensors/temp_sensor
         :param host: IP address of the MQTT broker used for communications. e.g: '192.168.1.2'
         :param username: Username used for MQTT broker authentication
         :param password: Password used for MQTT broker authentication
