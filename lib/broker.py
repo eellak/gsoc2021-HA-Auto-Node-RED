@@ -1,15 +1,7 @@
 from commlib.transports.mqtt import ConnectionParameters, Credentials
 
-
-# An index of all current MQTT Brokers
-class BrokerIndex:
-    # Dictionary with references to all automations
-    broker_index = {}
-
-    # Add a Broker to the index
-    def add_broker(self, name, new_broker):
-        if name not in self.broker_index:
-            self.broker_index[name] = new_broker
+# An index of all current MQTT Brokers {'broker_name': broker_object}. Gets populated by Broker's __init()__.
+broker_index = {}
 
 
 # A class representing an Automation
@@ -55,5 +47,7 @@ class Broker:
         # Create commlib-py Credentials and ConnectionParameters objects
         self.credentials = Credentials(username, password)
         self.conn_params = ConnectionParameters(host=host, port=port, creds=self.credentials)
-        # Add Automation to BrokerIndex
-        BrokerIndex.add_broker(self=BrokerIndex, name=self.name, new_broker=self)
+
+        # Add Broker to broker_index
+        if self.name not in broker_index:
+            broker_index[self.name] = self

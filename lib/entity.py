@@ -1,6 +1,7 @@
 from commlib.endpoints import endpoint_factory, EndpointType, TransportType
 from commlib.transports.mqtt import ConnectionParameters, Credentials
 
+from lib.broker import broker_index
 
 # An index of all current Entities
 class EntityIndex:
@@ -51,13 +52,13 @@ class Entity:
 
 
     """
-    def __init__(self, name, topic, broker):
+    def __init__(self, name, topic, broker_name):
         """
         Creates and returns an Entity object
         :param name: Entity name. e.g: 'temperature_sensor'
         :param topic: MQTT topic on which entity communicates. e.g: 'sensors.temp_sensor' corresponds to topic
             sensors/temp_sensor
-        :param broker: Broker object representing the MQTT broker used for communications.
+        :param broker_name: Name of the MQTT broker used for communications.
         """
         # Entity name
         self.name = name
@@ -75,8 +76,11 @@ class Entity:
         # Add a reference of this Entity in the EntityIndex
         EntityIndex.add_entity(self=EntityIndex, name=self.name, new_entity=self)
 
-        # Create and start MQTT subscriber and related data
-        self.broker = broker
+        # Set Entity's MQTT Broker
+        self.broker_name = broker_name
+        self.broker = broker_index[broker_name]
+
+        # Create and start MQTT subscriber
         self.mqtt_sub = endpoint_factory(EndpointType.Subscriber, TransportType.MQTT)(
             topic=topic,
             conn_params=self.broker.conn_params,
