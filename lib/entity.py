@@ -51,15 +51,13 @@ class Entity:
 
 
     """
-    def __init__(self, name, topic, host, username, password):
+    def __init__(self, name, topic, broker):
         """
         Creates and returns an Entity object
         :param name: Entity name. e.g: 'temperature_sensor'
         :param topic: MQTT topic on which entity communicates. e.g: 'sensors.temp_sensor' corresponds to topic
             sensors/temp_sensor
-        :param host: IP address of the MQTT broker used for communications. e.g: '192.168.1.2'
-        :param username: Username used for MQTT broker authentication
-        :param password: Password used for MQTT broker authentication
+        :param broker: Broker object representing the MQTT broker used for communications.
         """
         # Entity name
         self.name = name
@@ -78,14 +76,10 @@ class Entity:
         EntityIndex.add_entity(self=EntityIndex, name=self.name, new_entity=self)
 
         # Create and start MQTT subscriber and related data
-        self.host = host
-        self.username = username
-        self.password = password
-        self.credentials = Credentials(username, password)
-        self.conn_params = ConnectionParameters(host=host, creds=self.credentials)
+        self.broker = broker
         self.mqtt_sub = endpoint_factory(EndpointType.Subscriber, TransportType.MQTT)(
             topic=topic,
-            conn_params=self.conn_params,
+            conn_params=self.broker.conn_params,
             on_message=self.update_state
         )
         self.mqtt_sub.run()
