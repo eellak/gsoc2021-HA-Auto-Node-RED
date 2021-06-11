@@ -1,0 +1,18 @@
+BrokerModel:
+    brokers+=Broker
+;
+
+Broker:
+    'broker:'
+        (
+        'name:' name=STRING
+        'host:' host=STRING
+        'port:' port=INT
+        'username:' username=STRING
+        'password:' password=STRING
+        )#
+;
+
+Comment:
+  /\/\/.*$/
+;

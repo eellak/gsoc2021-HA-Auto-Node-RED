@@ -1,0 +1,15 @@
+// MQTT broker configuration
+broker:
+    name: 'home_broker'
+    host: '192.168.1.2'
+    username: 'example_username'
+    password: 'example_password'
+    port: 1883
+
+// You can use multiple broker files and include multiple brokers in each file
+broker:
+    name: 'home_broker_2'
+    host: '192.168.1.3'
+    username: 'example_username_2'
+    password: 'example_password_2'
+    port: 1883
