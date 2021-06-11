@@ -1,0 +1,11 @@
+// Temperature sensor configuration
+entity:
+    name: "temperature_sensor"
+    topic: "mqtt_sensors.temperature_sensor"
+    broker_name: "home_broker"
+
+// You can use multiple entity files and include multiple entities in each file
+entity:
+    name: "status_sensor"
+    topic: "mqtt_sensors.status_sensor"
+    broker_name: "home_broker"
