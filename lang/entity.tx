@@ -1,0 +1,16 @@
+EntityModel:
+    entities+=Entity
+;
+
+Entity:
+    'entity:'
+        (
+        'name:' name=STRING
+        'topic:' topic=STRING
+        'broker_name:' broker_name=STRING
+        )#
+;
+
+Comment:
+  /\/\/.*$/
+;
