@@ -34,21 +34,23 @@ class Broker:
     ---
     """
 
-    def __init__(self, name, host, username, password):
+    def __init__(self, name, host, username, password, port=1883):
         """
         Creates and returns a Broker object
         :param name: Broker name. e.g: 'home_mqtt'
         :param host: IP address of the MQTT broker used for communications. e.g: '192.168.1.2'
+        :param port: Port used for MQTT broker communication
         :param username: Username used for MQTT broker authentication
         :param password: Password used for MQTT broker authentication
         """
         # MQTT Broker
         self.name = name
         self.host = host
+        self.port = port
         self.username = username
         self.password = password
         # Create commlib-py Credentials and ConnectionParameters objects
         self.credentials = Credentials(username, password)
-        self.conn_params = ConnectionParameters(host=host, creds=self.credentials)
+        self.conn_params = ConnectionParameters(host=host, port=port, creds=self.credentials)
         # Add Automation to BrokerIndex
         BrokerIndex.add_broker(self=BrokerIndex, name=self.name, new_broker=self)
