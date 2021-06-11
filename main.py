@@ -1,3 +1,6 @@
+import pathlib
+from textx import metamodel_from_file
+
 from lib.automation import Automation, AutomationIndex
 from lib.broker import Broker, BrokerIndex
 from lib.entity import Entity, EntityIndex
@@ -5,11 +8,21 @@ import config.config as cfg
 
 if __name__ == '__main__':
 
-    # Create MQTT Broker object
-    home_broker = Broker(name='home_broker',
-                         host=cfg.mqtt["host"],
-                         username=cfg.mqtt["username"],
-                         password=cfg.mqtt["password"])
+    # Configuration files directory
+    config_dir = pathlib.Path('config')
+
+    # Initialize broker
+    brokers_meta_tx = metamodel_from_file('lang/broker.tx', classes=[Broker])
+
+    # Read Brokers from files
+    brokers_files = list(config_dir.glob('*.broker'))
+    brokers_files.remove(pathlib.Path("config\\broker_example.broker"))
+    brokers = []
+    for broker_file in brokers_files:
+        brokers.extend(brokers_meta_tx.model_from_file(broker_file).brokers)
+
+    # MQTT Broker object
+    home_broker = brokers[0]
 
     # Create sensor Entities
     temp_sensor = Entity(name='temperature_sensor',

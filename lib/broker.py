@@ -34,7 +34,7 @@ class Broker:
     ---
     """
 
-    def __init__(self, name, host, username, password, port=1883):
+    def __init__(self, parent, name, host, username, password, port=1883):
         """
         Creates and returns a Broker object
         :param name: Broker name. e.g: 'home_mqtt'
@@ -42,7 +42,10 @@ class Broker:
         :param port: Port used for MQTT broker communication
         :param username: Username used for MQTT broker authentication
         :param password: Password used for MQTT broker authentication
+        :param parent: Parameter required for Custom Class compatibility in textX
         """
+        # TextX parent attribute. Required to use as custom class during metamodel instantiation
+        self.parent = parent
         # MQTT Broker
         self.name = name
         self.host = host
