@@ -3,15 +3,8 @@ from commlib.transports.mqtt import ConnectionParameters, Credentials
 
 from lib.broker import broker_index
 
-# An index of all current Entities
-class EntityIndex:
-    # Dictionary with references to all entities
-    entityIndex = {}
-
-    # Add an Entity to the index
-    def add_entity(self, name, new_entity):
-        if name not in self.entityIndex:
-            self.entityIndex[name] = new_entity
+# An index of all current Entities {'entity_name': entity_object}. Gets populated by Entity's __init()__.
+entity_index = {}
 
 
 # A class representing an entity communicating via an MQTT broker on a specific topic
@@ -52,14 +45,18 @@ class Entity:
 
 
     """
-    def __init__(self, name, topic, broker_name):
+    def __init__(self, parent, name, topic, broker_name):
         """
         Creates and returns an Entity object
         :param name: Entity name. e.g: 'temperature_sensor'
         :param topic: MQTT topic on which entity communicates. e.g: 'sensors.temp_sensor' corresponds to topic
             sensors/temp_sensor
         :param broker_name: Name of the MQTT broker used for communications.
+        :param parent: Parameter required for Custom Class compatibility in textX
         """
+        # TextX parent attribute. Required to use Entity as a custom class during metamodel instantiation
+        self.parent = parent
+
         # Entity name
         self.name = name
 
@@ -73,8 +70,9 @@ class Entity:
         # Automations with conditions that involve this entity
         self.automations = []
 
-        # Add a reference of this Entity in the EntityIndex
-        EntityIndex.add_entity(self=EntityIndex, name=self.name, new_entity=self)
+        # Add a reference of this Entity in the entity_index
+        if self.name not in entity_index:
+            entity_index[self.name] = self
 
         # Set Entity's MQTT Broker
         self.broker_name = broker_name

@@ -3,13 +3,15 @@ from textx import metamodel_from_file
 
 from lib.automation import Automation, AutomationIndex
 from lib.broker import Broker, broker_index
-from lib.entity import Entity, EntityIndex
+from lib.entity import Entity, entity_index
 import config.config as cfg
 
 if __name__ == '__main__':
 
     # Configuration files directory
     config_dir = pathlib.Path('config')
+
+    # === Initialize Brokers ====
 
     # Initialize broker metamodel
     brokers_meta_tx = metamodel_from_file('lang/broker.tx', classes=[Broker])
@@ -25,14 +27,27 @@ if __name__ == '__main__':
         for broker in brokers_meta_tx.model_from_file(file).brokers:
             debug_broker_index[broker.name] = broker
 
-    # Create sensor Entities
-    temp_sensor = Entity(name='temperature_sensor',
-                         topic='mqtt_sensors.temperature_sensor',
-                         broker_name='home_broker')
+    # === Initialize Entities ===
 
-    status_sensor = Entity(name='status_sensor',
-                           topic='mqtt_sensors.status_sensor',
-                           broker_name='home_broker')
+    # Initialize entity metamodel
+    entities_meta_tx = metamodel_from_file('lang/entity.tx', classes=[Entity])
+
+    # Read Entities from files
+    entities_files = list(config_dir.glob('*.entity'))
+    entities_files.remove(pathlib.Path("config\\entity_example.entity"))
+
+    # Iterate through entity files and entities. Entities are added to the entity_index through the Entity __init()__.
+    # debug_entity_index will end up being a copy of entity_index from lib.entity
+    debug_entity_index = {}
+    for file in entities_files:
+        for entity in entities_meta_tx.model_from_file(file).entities:
+            debug_broker_index[entity.name] = entity
+
+    # Get sensor Entities from the entity_index
+    temp_sensor = entity_index['temperature_sensor']
+    status_sensor = entity_index['status_sensor']
+
+    # === Initialize Automations ===
 
     # Create Automation actions and conditions using closures
     def automation_action_generator(sensor):
