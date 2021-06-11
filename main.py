@@ -1,7 +1,7 @@
 from lib.automation import Automation, AutomationIndex
 from lib.broker import Broker, BrokerIndex
 from lib.entity import Entity, EntityIndex
-import config as cfg
+import config.config as cfg
 
 if __name__ == '__main__':
 
