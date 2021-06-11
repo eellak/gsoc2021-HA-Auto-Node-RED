@@ -3,7 +3,7 @@ class AutomationIndex:
     # Dictionary with references to all automations
     automation_index = {}
 
-    # Add an Entity to the index
+    # Add an Automation to the index
     def add_automation(self, name, new_automation):
         if name not in self.automation_index:
             self.automation_index[name] = new_automation
