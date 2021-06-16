@@ -1,0 +1,70 @@
+// Types
+type string
+type int
+type float
+type bool
+
+// === Brokers ===
+amqp:
+    name: office_broker
+    host: '18.234.13.6'
+    vhost: 'vh1'
+    credentials:
+        username: 'amqp_username'
+        password: '!!!amqp_password'
+    port: 5671
+    exchange: 'no'
+
+mqtt:
+    name: home_broker
+    host: '192.168.1.6'
+    port: 1883
+    credentials:
+        username: 'mosquitto'
+        password: '!!!mosquitto'
+
+redis:
+    name: smart_farm
+    host: '10.4.12.134'
+    port: 9443
+    credentials:
+        username: 'smartRadish'
+        password: 'strongPotato'
+    db: 5
+
+// === Entities ===
+entity:
+    name: status_sensor
+    topic: "mqtt_sensors.status_sensor"
+    broker: smart_farm
+    attributes:
+        - status: string
+        - location: string
+
+entity:
+    name: temperature_sensor
+    topic: "mqtt_sensors.temperature_sensor"
+    broker: home_broker
+    attributes:
+        - temperature: float
+        - timestamp: int
+
+entity:
+    name: thermostat
+    topic: "mqtt_sensors.thermostat"
+    broker: home_broker
+    attributes:
+        - temperature: float
+        - on: bool
+
+// === Automations ===
+automation:
+    name: AdjustThermostat
+    condition: (temperature_sensor:'temperature' < 10) AND (thermostat:'on' == 'False')
+    enabled: true
+    actions:
+        status_sensor:
+            - status: 'At Home'
+        thermostat:
+            - temperature: 20
+            - on: True
