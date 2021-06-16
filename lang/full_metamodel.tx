@@ -1,0 +1,14 @@
+import automation
+import broker
+import entity
+
+FullModel:
+    types*=Type
+    brokers+=Broker
+    entities*=Entity
+    automations*=Automation
+;
+
+Comment:
+  /\/\/.*$/
+;
