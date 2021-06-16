@@ -1,16 +1,22 @@
-EntityModel:
-    entities+=Entity
-;
+import broker
 
+//TODO: Model mqtt topics?
 Entity:
     'entity:'
         (
-        'name:' name=STRING
+        'name:' name=ID
         'topic:' topic=STRING
-        'broker_name:' broker_name=STRING
+        'broker:' broker=[Broker]
+        'attributes:'
+                attributes*=Attribute
         )#
 ;
 
-Comment:
-  /\/\/.*$/
+//TODO: Add Attribute types?
+Attribute:
+    '-' name=ID ':' type=[Type]
+;
+
+Type:
+    'type' name=ID
 ;
