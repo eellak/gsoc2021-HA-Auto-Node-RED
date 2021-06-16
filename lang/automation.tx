@@ -1,0 +1,49 @@
+import entity
+
+// === Overall Automation ===
+Automation:
+    'automation:'
+        (
+        ('name:' name=ID)
+        ('condition:' condition=Condition)
+        ('actions:' actions*=Action)
+        ('enabled:' enabled=BOOL)
+        )#
+;
+
+// === Conditions ===
+Condition: ConditionGroup | PrimitiveCondition;
+
+ConditionGroup:
+    '(' r1=Condition ')' operator=BooleanOperatorType '(' r2=Condition ')'
+;
+
+PrimitiveCondition: StringCondition | NumericCondition;
+
+StringCondition:
+    param=[Entity] ':' property=STRING operator=StringOperatorType val=STRING
+;
+
+NumericCondition:
+    param=[Entity] ':' property=STRING operator=NumericOperatorType val=NUMBER
+;
+
+StringOperatorType: '~' | '!~' | '==' | '!=';
+
+NumericOperatorType: '>' | '<' | '==' | '!=';
+
+BooleanOperatorType: 'AND' | 'OR' | 'NOT' | 'XOR' | 'NOR' | 'XNOR' | 'NAND';
+
+// === Actions ===
+Action:
+    entity=[Entity]':'
+        parameters*=Parameter
+;
+
+Parameter:
+    '-' name=ID ':' value=Value
+;
+
+Value:
+    INT | FLOAT | BOOL | STRING
+;
