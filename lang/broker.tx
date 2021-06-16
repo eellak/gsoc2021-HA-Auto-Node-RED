@@ -1,18 +1,41 @@
-BrokerModel:
-    brokers+=Broker
+Broker: AMQPBroker | MQTTBroker | RedisBroker;
+
+BrokerAuth: BrokerAuthPlain;
+
+BrokerAuthPlain:
+    'username:' username=STRING
+    'password:' password=STRING
 ;
 
-Broker:
-    'broker:'
-        (
-        'name:' name=STRING
+AMQPBroker:
+    'amqp:'
+    (
+        'name:' name=ID
         'host:' host=STRING
         'port:' port=INT
-        'username:' username=STRING
-        'password:' password=STRING
-        )#
+        'vhost:' vhost=STRING
+        ('exchange:' exchange=STRING)?
+        'credentials:' credentials=BrokerAuth
+    )#
 ;
 
-Comment:
-  /\/\/.*$/
+MQTTBroker:
+    'mqtt:'
+    (
+        'name:' name=ID
+        'host:' host=STRING
+        'port:' port=INT
+        'credentials:' credentials=BrokerAuth
+    )#
+;
+
+RedisBroker:
+    'redis:'
+    (
+        'name:' name=ID
+        'host:' host=STRING
+        'port:' port=INT
+        ('db:' db=INT)?
+        'credentials:' credentials=BrokerAuth
+    )#
 ;
