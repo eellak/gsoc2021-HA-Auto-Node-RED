@@ -12,11 +12,26 @@ Entity:
         )#
 ;
 
-//TODO: Add Attribute types?
 Attribute:
-    '-' name=ID ':' type=[Type]
+    NumericAttribute | BoolAttribute | StringAttribute
 ;
 
-Type:
-    'type' name=ID
+NumericAttribute:
+    IntAttribute | FloatAttribute
+;
+
+IntAttribute:
+    '-' name=ID ':' 'int'
+;
+
+FloatAttribute:
+    '-' name=ID ':' 'float'
+;
+
+StringAttribute:
+    '-' name=ID ':' 'string'
+;
+
+BoolAttribute:
+    '-' name=ID ':' 'bool'
 ;
