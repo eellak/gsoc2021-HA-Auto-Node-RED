@@ -41,16 +41,24 @@ BooleanOperatorType: 'AND' | 'OR' | 'NOT' | 'XOR' | 'NOR' | 'XNOR' | 'NAND';
 
 // === Actions ===
 Action:
-    entity=[Entity]':'
-        parameters*=Parameter
+    FloatAction | IntAction | BoolAction | StringAction
 ;
 
-Parameter:
-    '-' name=ID ':' value=Value
+IntAction:
+    ('-' attribute=[IntAttribute|FQN] ':' value=INT)
 ;
 
-Value:
-    INT | FLOAT | BOOL | STRING
+FloatAction:
+    ('-' attribute=[FloatAttribute|FQN] ':' value=STRICTFLOAT)
 ;
 
+StringAction:
+    ('-' attribute=[StringAttribute|FQN] ':' value=STRING)
+;
+
+BoolAction:
+    ('-' attribute=[BoolAttribute|FQN] ':' value=BOOL)
+;
+
+// Fully Qualified Names Rule
 FQN: ID('.'ID)*;
