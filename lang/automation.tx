@@ -18,15 +18,20 @@ ConditionGroup:
     '(' r1=Condition ')' operator=BooleanOperatorType '(' r2=Condition ')'
 ;
 
-PrimitiveCondition: StringCondition | NumericCondition;
+PrimitiveCondition: StringCondition | NumericCondition | BoolCondition;
 
 StringCondition:
-    param=[Entity] ':' property=STRING operator=StringOperatorType val=STRING
+    (operand1=[StringAttribute|FQN] operator=StringOperatorType operand2=STRING)
 ;
 
 NumericCondition:
-    param=[Entity] ':' property=STRING operator=NumericOperatorType val=NUMBER
+    (operand1=[NumericAttribute|FQN] operator=NumericOperatorType operand2=INT | FLOAT)
 ;
+
+BoolCondition:
+    (operand1=[BoolAttribute|FQN] operator=BooleanOperatorType operand2=BOOL)
+;
+
 
 StringOperatorType: '~' | '!~' | '==' | '!=';
 
@@ -47,3 +52,5 @@ Parameter:
 Value:
     INT | FLOAT | BOOL | STRING
 ;
+
+FQN: ID('.'ID)*;
