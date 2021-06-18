@@ -1,9 +1,3 @@
-// Types
-type string
-type int
-type float
-type bool
-
 // === Brokers ===
 amqp:
     name: office_broker
@@ -36,6 +30,14 @@ redis:
 entity:
     name: status_sensor
     topic: "mqtt_sensors.status_sensor"
+    broker: home_broker
+    attributes:
+        - status: string
+        - location: string
+
+entity:
+    name: status_sensor_2
+    topic: "mqtt_sensors.status_sensor_2"
     broker: smart_farm
     attributes:
         - status: string
@@ -44,6 +46,14 @@ entity:
 entity:
     name: temperature_sensor
     topic: "mqtt_sensors.temperature_sensor"
+    broker: home_broker
+    attributes:
+        - temperature: float
+        - timestamp: int
+
+entity:
+    name: temperature_sensor_kitchen
+    topic: "mqtt_sensors.temperature_sensor_kitchen"
     broker: home_broker
     attributes:
         - temperature: float
@@ -60,7 +70,7 @@ entity:
 // === Automations ===
 automation:
     name: AdjustThermostat
-    condition: (temperature_sensor:'temperature' < 10) AND (thermostat:'on' == 'False')
+    condition: ((temperature_sensor.temperature < 10) AND (status_sensor_2.status == "At Home")) AND (thermostat.on AND True)
     enabled: true
     actions:
         status_sensor:
