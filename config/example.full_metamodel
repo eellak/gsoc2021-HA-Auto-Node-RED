@@ -70,11 +70,8 @@ entity:
 // === Automations ===
 automation:
     name: AdjustThermostat
-    condition: ((temperature_sensor.temperature < 10) AND (status_sensor_2.status == "At Home")) AND (thermostat.on AND True)
+    condition: ((temperature_sensor.temperature < 10) AND (status_sensor_2.status == "At Home")) AND (thermostat.on NOT True)
     enabled: true
     actions:
-        status_sensor:
-            - status: 'At Home'
-        thermostat:
-            - temperature: 20
-            - on: True
+        - thermostat.temperature: 20.0
+        - thermostat.on: True
