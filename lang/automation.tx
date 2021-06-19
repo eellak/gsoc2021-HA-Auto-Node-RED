@@ -21,15 +21,15 @@ ConditionGroup:
 PrimitiveCondition: StringCondition | NumericCondition | BoolCondition;
 
 StringCondition:
-    (operand1=[StringAttribute|FQN] operator=StringOperatorType operand2=STRING)
+    (operand1=[StringAttribute|FQN|entities.attributes] operator=StringOperatorType operand2=STRING)
 ;
 
 NumericCondition:
-    (operand1=[NumericAttribute|FQN] operator=NumericOperatorType operand2=INT | FLOAT)
+    (operand1=[NumericAttribute|FQN|entities.attributes] operator=NumericOperatorType operand2=INT | FLOAT)
 ;
 
 BoolCondition:
-    (operand1=[BoolAttribute|FQN] operator=BooleanOperatorType operand2=BOOL)
+    (operand1=[BoolAttribute|FQN|entities.attributes] operator=BooleanOperatorType operand2=BOOL)
 ;
 
 
@@ -45,19 +45,19 @@ Action:
 ;
 
 IntAction:
-    ('-' attribute=[IntAttribute|FQN] ':' value=INT)
+    ('-' attribute=[IntAttribute|FQN|entities.attributes] ':' value=INT)
 ;
 
 FloatAction:
-    ('-' attribute=[FloatAttribute|FQN] ':' value=STRICTFLOAT)
+    ('-' attribute=[FloatAttribute|FQN|entities.attributes] ':' value=STRICTFLOAT)
 ;
 
 StringAction:
-    ('-' attribute=[StringAttribute|FQN] ':' value=STRING)
+    ('-' attribute=[StringAttribute|FQN|entities.attributes] ':' value=STRING)
 ;
 
 BoolAction:
-    ('-' attribute=[BoolAttribute|FQN] ':' value=BOOL)
+    ('-' attribute=[BoolAttribute|FQN|entities.attributes] ':' value=BOOL)
 ;
 
 // Fully Qualified Names Rule
