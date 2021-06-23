@@ -1,12 +1,10 @@
 from textx import textx_isinstance
 
-# PlantUML Code
-depth = 1
-
+# List of primitive types that can be directly printed
 primitives = (int, float, str, bool)
 
 
-def printOperand(node):
+def print_operand(node):
     if type(node) in primitives:
         return node
     else:
@@ -14,7 +12,7 @@ def printOperand(node):
 
 
 # Pre-Order traversal of Condition tree
-def visitNode(node, depth, metamodel, file_writer):
+def visit_node(node, depth, metamodel, file_writer):
     # Increase depth
     depth += 1
 
@@ -25,31 +23,35 @@ def visitNode(node, depth, metamodel, file_writer):
     if textx_isinstance(node, metamodel.namespaces['automation']['ConditionGroup']):
 
         # Visit left node
-        visitNode(node.r1, depth, metamodel, file_writer)
+        visit_node(node.r1, depth, metamodel, file_writer)
         # Visit right node
-        visitNode(node.r2, depth, metamodel, file_writer)
+        visit_node(node.r2, depth, metamodel, file_writer)
 
     # If we are in a primitive condition node, print it out
     else:
-        operand1 = printOperand(node.operand1)
-        operand2 = printOperand(node.operand2)
+        operand1 = print_operand(node.operand1)
+        operand2 = print_operand(node.operand2)
         file_writer.write(f"{'-' * (depth + 1)} {operand1}\n")
         file_writer.write(f"{'-' * (depth + 1)} {operand2}\n")
 
 
 # Visualizes Automation Conditions and Actions using PlantUML
 def visualize_automation(metamodel, automation):
+    # Initial MindMap depth
+    depth = 1
+
+    # Open output file and write
     with open(f'automation_{automation.name}.pu', 'w') as f:
-        # Write model start
+        # Write MindMap model start
         f.write('@startmindmap\n')
         # Write center node
         f.write("+ Then\n")
-        # Write actions
+        # Write Actions
         for action in automation.actions:
-            f.write(f"++ {printOperand(action.attribute)} = {action.value}\n")
-        # Write conditions
-        visitNode(automation.condition, 1, metamodel, f)
-        # Write end
+            f.write(f"++ {print_operand(action.attribute)} = {action.value}\n")
+        # Write Conditions
+        visit_node(automation.condition, depth, metamodel, f)
+        # Write MindMap model end
         f.write("@endmindmap")
         # Close file writer
         f.close()
