@@ -3,11 +3,10 @@ from textx import textx_isinstance
 # List of primitive types that can be directly printed
 primitives = (int, float, str, bool)
 
-#TODO: String operators here need to change to correct operators for ~, !~
 operators = {
     # String operators
-    '~': lambda left, right: f"({left} != {right})",
-    '!~': lambda left, right: f"({left} != {right})",
+    '~': lambda left, right: f"({left} in {right})",
+    '!~': lambda left, right: f"({left} not in {right})",
 
     # Shared operators
     '==': lambda left, right: f"({left} == {right})",
