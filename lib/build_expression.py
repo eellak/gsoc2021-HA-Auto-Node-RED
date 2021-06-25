@@ -36,7 +36,7 @@ def print_operand(node):
             return node
     # Node is an Attribute, print its full name including Entity
     else:
-        return node.parent.name + '.' + node.name
+        return f"model.entities_dict['{node.parent.name}'].attributes_dict['{node.name}'].value"
 
 
 # Post-Order traversal of Condition tree
