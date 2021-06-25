@@ -1,5 +1,14 @@
 from commlib.endpoints import endpoint_factory, EndpointType, TransportType
 
+from lib.broker import MQTTBroker, AMQPBroker, RedisBroker
+
+# Broker classes and their corresponding TransportType
+broker_tt = {
+    MQTTBroker: TransportType.MQTT,
+    AMQPBroker: TransportType.AMQP,
+    RedisBroker: TransportType.REDIS
+}
+
 
 # A class representing an entity communicating via an MQTT broker on a specific topic
 class Entity:
@@ -60,13 +69,21 @@ class Entity:
         # Attributes Dictionary
         self.attributes_dict = {attribute.name: attribute for attribute in self.attributes}
 
-        # Create and start MQTT subscriber
-        self.subscriber = endpoint_factory(EndpointType.Subscriber, TransportType.MQTT)(
+        # Create and start communications subscriber on Entity's topic
+        self.subscriber = endpoint_factory(EndpointType.Subscriber, broker_tt[type(self.broker)])(
             topic=topic,
             conn_params=self.broker.conn_params,
             on_message=self.update_state
         )
         self.subscriber.run()
+
+        # Create communications publisher on Entity's topic
+        self.publisher = endpoint_factory(EndpointType.Publisher, broker_tt[type(self.broker)])(
+            topic=topic,
+            conn_params=self.broker.conn_params,
+            # TODO: Remove debug flag
+            debug=True
+        )
 
     # Callback function for updating Entity state and triggering automations evaluation
     def update_state(self, new_state):
@@ -83,7 +100,6 @@ class Entity:
         # Update attributes
         for attribute, value in self.state.items():
             self.attributes_dict[attribute].value = value
-
 
 
 class Attribute:
