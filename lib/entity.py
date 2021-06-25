@@ -57,6 +57,9 @@ class Entity:
         # Entity's Attributes
         self.attributes = attributes
 
+        # Attributes Dictionary
+        self.attributes_dict = {attribute.name: attribute for attribute in self.attributes}
+
         # Create and start MQTT subscriber
         self.subscriber = endpoint_factory(EndpointType.Subscriber, TransportType.MQTT)(
             topic=topic,
@@ -76,6 +79,11 @@ class Entity:
 
         # Update state
         self.state = new_state
+
+        # Update attributes
+        for attribute, value in self.state.items():
+            self.attributes_dict[attribute].value = value
+
 
 
 class Attribute:
