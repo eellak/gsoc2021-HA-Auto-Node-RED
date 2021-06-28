@@ -39,20 +39,24 @@ class Automation:
         self.actions = actions
 
     # Evaluate the Automation's conditions and run the actions
-    #TODO: Update this function to work with eval() and new condition builder
     def evaluate(self):
         """
-            Evaluates the Automation's conditions in the enabled is True and runs the actions. Meant to be run by the
-            update_state() function in the Entities listed in condition_entities upon them updating their states.
+            Evaluates the Automation's conditions if enabled is True and runs the actions.
         :return:
         """
+        # Check if condition has been build using build_expression
         if self.enabled:
-            if self.condition():
-                return self.action()
+            if hasattr(self.condition, 'cond_lambda'):
+                # Evaluate condition providing the textX model as global context for evaluation
+                if eval(self.condition.cond_lambda, {'model': self.parent}):
+                    self.trigger()
+                    return f"{self.name}: triggered."
+                else:
+                    return f"{self.name}: not triggered."
             else:
-                return 'Condition Failed'
+                return f"{self.name}: condition not built. Please build using build_expression."
         else:
-            return 'Automation Disabled'
+            return f"{self.name}: Automation disabled."
 
     # Run Automation's actions
     def trigger(self):
