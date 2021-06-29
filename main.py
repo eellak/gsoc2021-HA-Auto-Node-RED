@@ -6,7 +6,6 @@ from textx import metamodel_from_file
 from lib.automation import Automation, Action, IntAction, FloatAction, StringAction, BoolAction
 from lib.broker import Broker, MQTTBroker, AMQPBroker, RedisBroker, BrokerAuthPlain
 from lib.entity import Entity, Attribute, IntAttribute, FloatAttribute, StringAttribute, BoolAttribute
-from lib.build_expression import build_condition
 
 
 # Used to initialize entities with data for condition testing purposes
@@ -22,9 +21,6 @@ def seed(entities_dict):
 
 
 if __name__ == '__main__':
-
-    # Configuration files directory
-    config_dir = pathlib.Path('config')
 
     # === Initialize Brokers ====
 
@@ -43,7 +39,7 @@ if __name__ == '__main__':
 
     # Build Conditions for all Automations
     for automation in model.automations:
-        build_condition(automation.condition, metamodel)
+        automation.build_condition()
         print(f"{automation.name} condition:\n{model.automations[0].condition.cond_lambda}\n")
 
     # Seed the entities with initial data so the Automation will evaluate to True

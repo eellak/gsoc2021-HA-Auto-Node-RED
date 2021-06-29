@@ -1,3 +1,47 @@
+from textx import textx_isinstance, get_metamodel
+
+# List of primitive types that can be directly printed
+primitives = (int, float, str, bool)
+
+# Lambdas used to build expression strings based on their corresponding operators
+operators = {
+    # String operators
+    '~': lambda left, right: f"({left} in {right})",
+    '!~': lambda left, right: f"({left} not in {right})",
+
+    # Shared operators
+    '==': lambda left, right: f"({left} == {right})",
+    '!=': lambda left, right: f"({left} != {right})",
+
+    # Numeric operators
+    '>': lambda left, right: f"({left} > {right})",
+    '<': lambda left, right: f"({left} < {right})",
+
+    # Boolean operators
+    'AND': lambda left, right: f"({left} and {right})",
+    'OR': lambda left, right: f"({left} or {right})",
+    'NOT': lambda left, right: f"({left} is not {right})",
+    'XOR': lambda left, right: f"({left} ^ {right})",
+    'NOR': lambda left, right: f"(not ({left} or {right}))",
+    'XNOR': lambda left, right: f"(({left} or {right}) and (not {left} or not {right}))",
+    'NAND': lambda left, right: f"(not ({left} and {right}))"
+}
+
+
+# Returns printed version of operand if operand is a primitive.
+# Else if attribute returns code pointing to the Attribute.
+def print_operand(node):
+    # If node is a primitive type return as is (if string, add quotation marks)
+    if type(node) in primitives:
+        if type(node) is str:
+            return f"'{node}'"
+        else:
+            return node
+    # Node is an Attribute, print its full name including Entity
+    else:
+        return f"model.entities_dict['{node.parent.name}'].attributes_dict['{node.name}'].value"
+
+
 # A class representing an Automation
 class Automation:
     """
@@ -19,6 +63,7 @@ class Automation:
         evaluate(self): Evaluates the Automation's conditions and runs the actions. Meant to be run by the
             update_state() function in the Entities listed in condition_entities upon them updating their states.
     """
+
     def __init__(self, parent, name, condition, actions, enabled):
         """
         Creates and returns an Automation object
@@ -74,6 +119,32 @@ class Automation:
         for entity, message in messages.items():
             # Send message via Entity's publisher
             entity.publisher.publish(message)
+
+    # Post-Order traversal of Condition tree, generating the condition for each node
+    def process_node_condition(self, cond_node):
+
+        # Get the full metamodel
+        metamodel = get_metamodel(self.parent)
+
+        # If we are in a ConditionGroup node, recursively visit the left and right sides
+        if textx_isinstance(cond_node, metamodel.namespaces['automation']['ConditionGroup']):
+
+            # Visit left node
+            self.process_node_condition(cond_node.r1)
+            # Visit right node
+            self.process_node_condition(cond_node.r2)
+            # Build lambda
+            cond_node.cond_lambda = (operators[cond_node.operator])(cond_node.r1.cond_lambda, cond_node.r2.cond_lambda)
+
+        # If we are in a primitive condition node, form conditions using operands
+        else:
+            operand1 = print_operand(cond_node.operand1)
+            operand2 = print_operand(cond_node.operand2)
+            cond_node.cond_lambda = (operators[cond_node.operator])(operand1, operand2)
+
+    # Builds Automation Condition into Python expression string so that it can later be evaluated using eval()
+    def build_condition(self):
+        self.process_node_condition(self.condition)
 
 
 class Action:
