@@ -127,3 +127,8 @@ class StringAttribute(Attribute):
 class BoolAttribute(Attribute):
     def __init__(self, parent, name):
         super().__init__(parent, name)
+
+
+class ListAttribute(Attribute):
+    def __init__(self, parent, name):
+        super().__init__(parent, name)
