@@ -1,9 +1,8 @@
-import pathlib
 import time
 
 from textx import metamodel_from_file
 
-from lib.automation import Automation, Action, IntAction, FloatAction, StringAction, BoolAction
+from lib.automation import Automation, List, Action, IntAction, FloatAction, StringAction, BoolAction
 from lib.broker import Broker, MQTTBroker, AMQPBroker, RedisBroker, BrokerAuthPlain
 from lib.entity import Entity, Attribute, IntAttribute, FloatAttribute, StringAttribute, BoolAttribute
 
@@ -29,7 +28,7 @@ if __name__ == '__main__':
                                                                        StringAttribute, BoolAttribute, Broker,
                                                                        MQTTBroker, AMQPBroker, RedisBroker,
                                                                        BrokerAuthPlain, Automation, Action, IntAction,
-                                                                       FloatAction, StringAction, BoolAction])
+                                                                       FloatAction, StringAction, BoolAction, List])
 
     # Initialize full model
     model = metamodel.model_from_file('config/example.full_metamodel')
@@ -40,7 +39,7 @@ if __name__ == '__main__':
     # Build Conditions for all Automations
     for automation in model.automations:
         automation.build_condition()
-        print(f"{automation.name} condition:\n{model.automations[0].condition.cond_lambda}\n")
+        print(f"{automation.name} condition:\n{automation.condition.cond_lambda}\n")
 
     # Seed the entities with initial data so the Automation will evaluate to True
     seed(model.entities_dict)

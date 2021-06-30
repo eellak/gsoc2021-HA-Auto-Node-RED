@@ -13,7 +13,7 @@ Entity:
 ;
 
 Attribute:
-    NumericAttribute | BoolAttribute | StringAttribute
+    NumericAttribute | BoolAttribute | StringAttribute | ListAttribute
 ;
 
 NumericAttribute:
@@ -34,4 +34,8 @@ StringAttribute:
 
 BoolAttribute:
     '-' name=ID ':' 'bool'
+;
+
+ListAttribute:
+    '-' name=ID ':' 'list'
 ;

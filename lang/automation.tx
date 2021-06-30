@@ -18,7 +18,7 @@ ConditionGroup:
     '(' r1=Condition ')' operator=BooleanOperatorType '(' r2=Condition ')'
 ;
 
-PrimitiveCondition: StringCondition | NumericCondition | BoolCondition;
+PrimitiveCondition: StringCondition | NumericCondition | BoolCondition | ListCondition;
 
 // String Conditions
 StringCondition:
@@ -71,12 +71,39 @@ BoolDouble:
     (operand1=[BoolAttribute|FQN|entities.attributes] operator=BooleanOperatorType operand2=[BoolAttribute|FQN|entities.attributes])
 ;
 
+// List Conditions
+ListCondition:
+    ListR | ListL | ListDouble
+;
+
+List:
+    '[' items*=ListElements[','] ']'
+;
+
+ListElements:
+    NUMBER | STRING | BOOL | List
+;
+
+ListR:
+    (operand1=[ListAttribute|FQN|entities.attributes] operator=ListOperatorType operand2=List)
+;
+
+ListL:
+    (operand1=List operator=ListOperatorType operand2=[ListAttribute|FQN|entities.attributes])
+;
+
+ListDouble:
+    (operand1=[ListAttribute|FQN|entities.attributes] operator=ListOperatorType operand2=[ListAttribute|FQN|entities.attributes])
+;
+
 // Operators
 StringOperatorType: '~' | '!~' | '==' | '!=';
 
 NumericOperatorType: '>' | '<' | '==' | '!=';
 
 BooleanOperatorType: 'AND' | 'OR' | 'NOT' | 'XOR' | 'NOR' | 'XNOR' | 'NAND';
+
+ListOperatorType: '==' | '!=';
 
 // === Actions ===
 Action:
