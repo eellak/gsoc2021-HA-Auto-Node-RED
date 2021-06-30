@@ -37,6 +37,9 @@ def print_operand(node):
             return f"'{node}'"
         else:
             return node
+    # If node is a List object just print it out. List has __repr()__ built in
+    elif type(node) == List:
+        return node
     # Node is an Attribute, print its full name including Entity
     else:
         return f"model.entities_dict['{node.parent.name}'].attributes_dict['{node.name}'].value"
@@ -145,6 +148,27 @@ class Automation:
     # Builds Automation Condition into Python expression string so that it can later be evaluated using eval()
     def build_condition(self):
         self.process_node_condition(self.condition)
+
+
+# List class for List type
+class List:
+    def __init__(self, parent, items):
+        self.parent = parent
+        self.items = items
+
+    # String representation of List class that opens up subLists as strings
+    def __repr__(self):
+        return str(self.print_item(self))
+
+    # List representation to bring out subLists instead of List items
+    @staticmethod
+    def print_item(item):
+        # If item is a list return list of items printed out including sublists
+        if type(item) == List:
+            return [item.print_item(x) for x in item.items]
+        # else if just a primitive, return it as is
+        else:
+            return item
 
 
 class Action:
