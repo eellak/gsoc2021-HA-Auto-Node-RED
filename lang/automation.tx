@@ -18,7 +18,7 @@ ConditionGroup:
     '(' r1=Condition ')' operator=BooleanOperatorType '(' r2=Condition ')'
 ;
 
-PrimitiveCondition: StringCondition | NumericCondition | BoolCondition | ListCondition;
+PrimitiveCondition: StringCondition | NumericCondition | BoolCondition | ListCondition | DictCondition;
 
 // String Conditions
 StringCondition:
@@ -80,6 +80,7 @@ List:
     '[' items*=ListElements[','] ']'
 ;
 
+//TODO: Add Dict to enable nested Dictionaries in Lists
 ListElements:
     NUMBER | STRING | BOOL | List
 ;
@@ -96,6 +97,37 @@ ListDouble:
     (operand1=[ListAttribute|FQN|entities.attributes] operator=ListOperatorType operand2=[ListAttribute|FQN|entities.attributes])
 ;
 
+// Dictionary Conditions
+DictCondition:
+    DictR | DictL | DictDouble
+;
+
+DictItem:
+    name=STRING ':' value=DictTypes
+;
+
+//TODO: Add Dict, List into DictTypes to enable nested Lists and Dictionaries in Dictionaries
+DictTypes:
+    NUMBER | STRING | BOOL
+;
+
+Dict:
+    '{' items*=DictItem[','] '}'
+;
+
+DictR:
+    (operand1=[DictAttribute|FQN|entities.attributes] operator=DictOperatorType operand2=Dict)
+;
+
+DictL:
+    (operand1=Dict operator=DictOperatorType operand2=[DictAttribute|FQN|entities.attributes])
+;
+
+DictDouble:
+    (operand1=[DictAttribute|FQN|entities.attributes] operator=DictOperatorType operand2=[DictAttribute|FQN|entities.attributes])
+;
+
+
 // Operators
 StringOperatorType: '~' | '!~' | '==' | '!=';
 
@@ -104,6 +136,8 @@ NumericOperatorType: '>' | '<' | '==' | '!=';
 BooleanOperatorType: 'AND' | 'OR' | 'NOT' | 'XOR' | 'NOR' | 'XNOR' | 'NAND';
 
 ListOperatorType: '==' | '!=';
+
+DictOperatorType: '==' | '!=';
 
 // === Actions ===
 Action:

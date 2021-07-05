@@ -40,6 +40,9 @@ def print_operand(node):
     # If node is a List object just print it out. List has __repr()__ built in
     elif type(node) == List:
         return node
+    # If node is a Dict object just print it out. List has __repr()__ built in
+    elif type(node) == Dict:
+        return node
     # Node is an Attribute, print its full name including Entity
     else:
         return f"model.entities_dict['{node.parent.name}'].attributes_dict['{node.name}'].value"
@@ -167,6 +170,7 @@ class List:
         print_item():
             Static method used by __repr__() and called recursively to return a python list of sub-items.
     """
+
     def __init__(self, parent, items):
         self.parent = parent
         self.items = items
@@ -176,6 +180,40 @@ class List:
         return str(self.print_item(self))
 
     # List representation to bring out subLists instead of List items
+    @staticmethod
+    def print_item(item):
+        """
+        Static method used by __repr__() and called recursively to return a python list of sub-items.
+        :param item: List or primitive item to open up
+        :return: Python list of primitives or python lists (previously sub-List items)
+        """
+        # If item is a list return list of items printed out including sublists
+        if type(item) == List:
+            return [item.print_item(x) for x in item.items]
+        # else if just a primitive, return it as is
+        else:
+            return item
+
+
+class Dict:
+
+    def __init__(self, parent, items):
+        self.parent = parent
+        self.items = items
+
+    # String representation of Dict class that prints subitems as strings
+    def __repr__(self):
+        final_str = "{"
+        for index, item in enumerate(self.items):
+            final_str = final_str + f"'{item.name}'" + ":" + str(self.print_item(item.value))
+            if index != (len(self.items) - 1):
+                final_str = final_str + ','
+        final_str = final_str + '}'
+        return final_str
+
+    # List representation to bring out subLists instead of List items
+    # TODO: This is a copy of the same method in the List class. Maybe unify them? Might change though with nested
+    # Dicts support.
     @staticmethod
     def print_item(item):
         """

@@ -69,6 +69,11 @@ class Entity:
         # Attributes Dictionary
         self.attributes_dict = {attribute.name: attribute for attribute in self.attributes}
 
+        # Inspect Attributes and if an attribute is a DictAttribute, create its items dictionary for easy updating
+        for attr_name, attribute in self.attributes_dict.items():
+            if type(attribute) is DictAttribute:
+                attribute.items_dict = {item.name: item for item in attribute.items}
+
         # Create and start communications subscriber on Entity's topic
         self.subscriber = endpoint_factory(EndpointType.Subscriber, broker_tt[type(self.broker)])(
             topic=topic,
@@ -100,6 +105,11 @@ class Entity:
         # Update attributes
         for attribute, value in self.state.items():
             self.attributes_dict[attribute].value = value
+            # If value is a dictionary, also update the Dict's subattributes/items
+            if type(value) is dict:
+                for key, sub_value in value.items():
+                    # Note: Items are Attributes so we update their value property
+                    self.attributes_dict[attribute].items_dict[key].value = sub_value
 
 
 class Attribute:
@@ -132,3 +142,9 @@ class BoolAttribute(Attribute):
 class ListAttribute(Attribute):
     def __init__(self, parent, name):
         super().__init__(parent, name)
+
+
+class DictAttribute(Attribute):
+    def __init__(self, parent, name, items):
+        super().__init__(parent, name)
+        self.items = items

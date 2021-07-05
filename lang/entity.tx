@@ -13,7 +13,7 @@ Entity:
 ;
 
 Attribute:
-    NumericAttribute | BoolAttribute | StringAttribute | ListAttribute
+    NumericAttribute | BoolAttribute | StringAttribute | ListAttribute | DictAttribute
 ;
 
 NumericAttribute:
@@ -38,4 +38,10 @@ BoolAttribute:
 
 ListAttribute:
     '-' name=ID ':' 'list'
+;
+
+DictAttribute:
+    '-' name=ID ':' '{'
+        items*=Attribute
+        '}'
 ;
