@@ -141,7 +141,7 @@ DictOperatorType: '==' | '!=';
 
 // === Actions ===
 Action:
-    FloatAction | IntAction | BoolAction | StringAction
+    FloatAction | IntAction | BoolAction | StringAction | ListAction | DictAction
 ;
 
 IntAction:
@@ -158,6 +158,14 @@ StringAction:
 
 BoolAction:
     ('-' attribute=[BoolAttribute|FQN|entities.attributes] ':' value=BOOL)
+;
+
+ListAction:
+    ('-' attribute=[ListAttribute|FQN|entities.attributes] ':' value=List)
+;
+
+DictAction:
+    ('-' attribute=[DictAttribute|FQN|entities.attributes] ':' value=Dict)
 ;
 
 // === Fully Qualified Names Rule ===

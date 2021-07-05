@@ -115,11 +115,17 @@ class Automation:
         messages = {}
         # Iterate over actions to form messages for each Entity
         for action in self.actions:
+            # If value is List or Dict, cast them to python lists and dicts
+            value = action.value
+            if type(value) is Dict:
+                value = value.to_dict()
+            elif type(value) is List:
+                value = value.print_item(value)
             # If entity of action already in messages, update the message. Else insert it.
             if action.attribute.parent in messages.keys():
-                messages[action.attribute.parent].update({action.attribute.name: action.value})
+                messages[action.attribute.parent].update({action.attribute.name: value})
             else:
-                messages[action.attribute.parent] = {action.attribute.name: action.value}
+                messages[action.attribute.parent] = {action.attribute.name: value}
 
         # Iterate over Entities and their corresponding messages
         for entity, message in messages.items():
@@ -228,6 +234,8 @@ class Dict:
         else:
             return item
 
+    def to_dict(self):
+        return {item.name: item.value for item in self.items}
 
 class Action:
     def __init__(self, parent, attribute, value):
