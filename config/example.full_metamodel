@@ -1,30 +1,12 @@
 // === Brokers ===
-amqp:
-    name: office_broker
-    host: '18.234.13.6'
-    vhost: 'vh1'
-    credentials:
-        username: 'amqp_username'
-        password: '!!!amqp_password'
-    port: 5671
-    exchange: 'no'
-
 mqtt:
     name: home_broker
-    host: '192.168.1.6'
+    //host: '192.168.1.6'
+    host: '127.0.0.1'
     port: 1883
     credentials:
         username: 'mosquitto'
         password: '!!!mosquitto'
-
-redis:
-    name: smart_farm
-    host: '10.4.12.134'
-    port: 9443
-    credentials:
-        username: 'smartRadish'
-        password: 'strongPotato'
-    db: 5
 
 // === Entities ===
 entity:
@@ -38,7 +20,7 @@ entity:
 entity:
     name: status_sensor_2
     topic: "mqtt_sensors.status_sensor_2"
-    broker: smart_farm
+    broker: home_broker
     attributes:
         - status: string
         - location: string
@@ -67,6 +49,23 @@ entity:
         - temperature: float
         - on: bool
 
+entity:
+    name: location
+    topic: "mqtt_sensors.location"
+    broker: home_broker
+    attributes:
+        -location: list
+
+entity:
+    name: gps
+    topic: "mqtt_sensors.gps"
+    broker: home_broker
+    attributes:
+        - coordinates: {
+            - x: int
+            - y: int
+        }
+
 // === Automations ===
 automation:
     name: AdjustThermostat
@@ -74,4 +73,18 @@ automation:
     enabled: true
     actions:
         - thermostat.temperature: 20.0
+        - thermostat.on: True
+
+automation:
+    name: LocationTest
+    condition: (location.location == [2, 2]) AND (thermostat.on NOT True)
+    enabled: true
+    actions:
+        - thermostat.on: True
+
+automation:
+    name: gpsAutomation
+    condition: gps.coordinates == {'x': 10, 'y': 12}
+    enabled: true
+    actions:
         - thermostat.on: True
