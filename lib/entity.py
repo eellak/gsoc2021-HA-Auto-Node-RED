@@ -102,21 +102,27 @@ class Entity:
         # Update state
         self.state = new_state
 
+        # Update attributes based on state
+        self.update_attributes(self.attributes_dict, new_state)
+
+    # Recursive function used by update_state() mainly to updated dictionaries/objects and normal Attributes
+    @staticmethod
+    def update_attributes(root, state_dict):
         # Update attributes
-        for attribute, value in self.state.items():
-            self.attributes_dict[attribute].value = value
+        for attribute, value in state_dict.items():
+
             # If value is a dictionary, also update the Dict's subattributes/items
             if type(value) is dict:
-                for key, sub_value in value.items():
-                    # Note: Items are Attributes so we update their value property
-                    self.attributes_dict[attribute].items_dict[key].value = sub_value
+                Entity.update_attributes(root[attribute].value, value)
+            else:
+                root[attribute].value = value
 
 
 class Attribute:
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, value=None):
         self.parent = parent
         self.name = name
-        self.value = None
+        self.value = value
 
 
 class IntAttribute(Attribute):
@@ -146,5 +152,7 @@ class ListAttribute(Attribute):
 
 class DictAttribute(Attribute):
     def __init__(self, parent, name, items):
-        super().__init__(parent, name)
+        # Create dictionary structure from items
+        value = {item.name: item for item in items}
+        super().__init__(parent, name, value=value)
         self.items = items
