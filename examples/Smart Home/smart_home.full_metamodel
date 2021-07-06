@@ -332,3 +332,113 @@ entity:
     broker: home_broker
     attributes:
         - state: int
+
+
+// ===== Automations =====
+// Gas Alert: If gas in kitchen goes over 30%, shut down all relays and thermostats.
+automation:
+    name: gasAlert
+    condition: kitchen_gas.gas > 0.3
+    enabled: true
+    continuous: true
+    actions:
+        - kitchen_relay.state: 0
+        - tv_relay.state: 0
+        - kitchen_thermostat.state: 0
+        - livingroom_thermostat.state: 0
+        - bedroom_thermostat.state: 0
+        - bathroom_thermostat.state: 0
+        - corridor_thermostat.state: 0
+
+// Humidity Control: Keep humidity in bedroom over 30%
+automation:
+    name: bedroomHumidityLow
+    condition: (bedroom_humidity.humidity < 0.3) AND (bedroom_humidifier.state == 0)
+    enabled: true
+    continuous: true
+    actions:
+        - bedroom_humidifier.state: 1
+
+automation:
+    name: bedroomHumidifierDisable
+    condition: (bedroom_humidity.humidity > 0.35) AND (bedroom_humidifier.state == 1)
+    enabled: true
+    continuous: true
+    actions:
+        - bedroom_humidifier.state: 0
+
+// Robot Cleaner: Send the robot to clean different rooms.
+// Start with Living Room and 10 minutes later send it to the Bedroom.
+automation:
+    name: robotCleanLivingRoom
+    condition: (clock.hour == 12) AND ((clock.minutes == 0) AND (clock.seconds == 0))
+    enabled: true
+    continuous: false
+    actions:
+        - robot_pose.translation: {
+            'x': 3,
+            'y': 3,
+            'z': 0
+        }
+        - robot_pose.orientation: {
+            'x': 0,
+            'y': 0,
+            'z': 0
+        }
+
+automation:
+    name: robotCleanKitchen
+    condition: (clock.hour == 12) AND ((clock.minutes == 10) AND (clock.seconds == 0))
+    enabled: true
+    continuous: false
+    actions:
+        - robot_pose.translation: {
+            'x': 6,
+            'y': 8,
+            'z': 0
+        }
+        - robot_pose.orientation: {
+            'x': 10,
+            'y': 20,
+            'z': 0
+        }
+
+// Adjust Bedroom Thermostat: Keep bedroom temperature at around 28 degrees Celsius if a human is in it
+automation:
+    name: bedroomThermostatEnable
+    condition: ((bedroom_human_detector.position != []) AND (bedroom_thermometer.temperature < 27.5)) AND (bedroom_thermostat.state == 0)
+    enabled: true
+    continuous: true
+    actions:
+        - bedroom_thermostat.state: 1
+
+automation:
+    name: bedroomThermostatDisable
+    condition: ((bedroom_human_detector.position != []) AND (bedroom_thermometer.temperature > 28.5)) AND (bedroom_thermostat.state == 1)
+    enabled: true
+    continuous: true
+    actions:
+        - bedroom_thermostat.state: 0
+
+// Intruder Detection: If intruder detected do the following:
+// Enable alarm, open all lights, send robot to corridor so that it can photograph the intruder,
+// open the TV and last but not least Rickroll the intruder
+automation:
+    name: intruderDetected
+    condition: ((livingroom_intruder_detector.position != []) OR (bedroom_intruder_detector.position != [])) OR (kitchen_intruder_detector.position != [])
+    enabled: true
+    continuous: false
+    actions:
+        - alarm.state: 1
+        - robot_pose.translation: {
+            'x': 5,
+            'y': 5,
+            'z': 0
+        }
+        - robot_pose.orientation: {
+            'x': 0,
+            'y': 0,
+            'z': 0
+        }
+        - tv_relay.state: 1
+        - audio_play_from_youtube.track_name: 'Never Gonna Give You Up - Rick Astley'
