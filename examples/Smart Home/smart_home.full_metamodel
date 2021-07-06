@@ -8,6 +8,19 @@ mqtt:
         password: 'broker_password'
 
 // ===== Entities =====
+// == Time ==
+entity:
+    name: clock
+    topic: "clock"
+    broker: home_broker
+    attributes:
+        - hour: int
+        - minutes: int
+        - seconds: int
+        - month: int
+        - day: int
+        - year: int
+
 // == Temperature ==
 entity:
     name: kitchen_thermometer
@@ -43,28 +56,28 @@ entity:
     topic: "kitchen.humidity"
     broker: home_broker
     attributes:
-        - temperature: float
+        - humidity: float
 
 entity:
     name: livingroom_humidity
     topic: "livingroom.humidity"
     broker: home_broker
     attributes:
-        - temperature: float
+        - humidity: float
 
 entity:
     name: bedroom_humidity
     topic: "bedroom.humidity"
     broker: home_broker
     attributes:
-        - temperature: float
+        - humidity: float
 
 entity:
     name: bathroom_humidity
     topic: "bathroom.humidity"
     broker: home_broker
     attributes:
-        - temperature: float
+        - humidity: float
 
 // == Gas ==
 entity:
@@ -241,6 +254,13 @@ entity:
     attributes:
         - state: int
 
+entity:
+    name: corridor_thermostat
+    topic: "corridor.thermostat"
+    broker: home_broker
+    attributes:
+        - state: int
+
 
 // == Relays ==
 entity:
@@ -281,21 +301,21 @@ entity:
 
 
 // == Robot ==
-//entity:
-//    name: robot_pose
-//    topic: "robot.pose"
-//    broker: home_broker
-//    attributes:
-//        - translation: dict {
-//            - x: int
-//            - y: int
-//            - z: int
-//        }
-//        - orientation: dict {
-//           - x: int
-//           - y: int
-//           - z: int
-//       }
+entity:
+    name: robot_pose
+    topic: "robot.pose"
+    broker: home_broker
+    attributes:
+        - translation: {
+            - x: int
+            - y: int
+            - z: int
+        }
+        - orientation: {
+           - x: int
+           - y: int
+           - z: int
+       }
 
 entity:
     name: robot_on_enter
