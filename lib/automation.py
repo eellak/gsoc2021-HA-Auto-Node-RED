@@ -60,23 +60,26 @@ class Automation:
             Automation name. e.g: 'open_lights'
         enabled: bool
             Whether the automation should be evaluated or not. e.g: True->Enabled, False->Disabled
-        condition: function (closure)
-            A condition function to be evaluated
+        condition: object
+            A condition type object evaluated to determine if the Automation's actions should be executed
         actions: list
-            A list of Action objects to be executed
+            A list of Action objects to be executed upon successful condition evaluation
+        continuous: bool
+            Indicates if the Automation should remain enabled after actions are run. e.g: True->Remain Enabled.
     Methods
     -------
         evaluate(self): Evaluates the Automation's conditions and runs the actions. Meant to be run by the
             update_state() function in the Entities listed in condition_entities upon them updating their states.
     """
 
-    def __init__(self, parent, name, condition, actions, enabled):
+    def __init__(self, parent, name, condition, actions, enabled, continuous):
         """
         Creates and returns an Automation object
         :param name: Automation name. e.g: 'open_lights'
         :param enabled: Whether the automation should be evaluated or not. e.g: True->Enabled, False->Disabled
-        :param condition: A condition function to be evaluated
-        :param actions: An action function to execute in response the successful evaluation of the condition() function
+        :param condition: A condition object evaluated to determine if the Automation's actions should be executed
+        :param actions: List of Action objects to be executed upon successful condition evaluation
+        :param continuous: Boolean variable indicating if the Automation should remain enabled after actions are run
         """
         # TextX parent attribute. Required to use Automation as a custom class during metamodel instantiation
         self.parent = parent
@@ -86,6 +89,9 @@ class Automation:
         self.condition = condition
         # Boolean variable indicating if the Automation is enabled and should be evaluated
         self.enabled = enabled
+        # Boolean variable indicating if the Automation should remain enabled after execution and not require manual
+        # reactivation
+        self.continuous = continuous
         # Action function
         self.actions = actions
 
@@ -111,6 +117,9 @@ class Automation:
 
     # Run Automation's actions
     def trigger(self):
+        # If continuous is false, disable automation until it is manually re-enabled
+        if not self.continuous:
+            self.enabled = False
         # Dictionary that maps Entities to the data that should be sent to them
         messages = {}
         # Iterate over actions to form messages for each Entity
@@ -236,6 +245,7 @@ class Dict:
 
     def to_dict(self):
         return {item.name: item.value for item in self.items}
+
 
 class Action:
     def __init__(self, parent, attribute, value):

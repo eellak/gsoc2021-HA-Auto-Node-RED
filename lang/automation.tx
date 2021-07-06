@@ -8,6 +8,7 @@ Automation:
         ('condition:' condition=Condition)
         ('actions:' actions*=Action)
         ('enabled:' enabled=BOOL)
+        ('continuous:' continuous=BOOL)
         )#
 ;
 
