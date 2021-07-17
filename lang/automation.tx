@@ -83,7 +83,7 @@ List:
 
 //TODO: Add Dict to enable nested Dictionaries in Lists
 ListElements:
-    NUMBER | STRING | BOOL | List
+    NUMBER | STRING | BOOL | List | Dict
 ;
 
 ListR:
@@ -109,7 +109,7 @@ DictItem:
 
 //TODO: Add Dict, List into DictTypes to enable nested Lists and Dictionaries in Dictionaries
 DictTypes:
-    NUMBER | STRING | BOOL
+    NUMBER | STRING | BOOL | Dict
 ;
 
 Dict:
