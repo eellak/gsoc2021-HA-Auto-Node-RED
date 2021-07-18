@@ -1,11 +1,14 @@
 from textx import textx_isinstance
+from lib.automation import Dict, List
 
 # List of primitive types that can be directly printed
 primitives = (int, float, str, bool)
+# Custom classes with a __repr__ function so that returning them will print them out. E.g: List class -> python list
+custom_classes = (Dict, List)
 
 
 def print_operand(node):
-    if type(node) in primitives:
+    if type(node) in primitives or type(node) in custom_classes:
         return node
     else:
         return node.parent.name + '.' + node.name
