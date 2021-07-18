@@ -2,9 +2,10 @@ import time
 
 from textx import metamodel_from_file
 
-from lib.automation import Automation, List, Action, IntAction, FloatAction, StringAction, BoolAction
+from lib.automation import Automation, List, Dict, Action, IntAction, FloatAction, StringAction, BoolAction
 from lib.broker import Broker, MQTTBroker, AMQPBroker, RedisBroker, BrokerAuthPlain
-from lib.entity import Entity, Attribute, IntAttribute, FloatAttribute, StringAttribute, BoolAttribute, ListAttribute
+from lib.entity import Entity, Attribute, \
+    IntAttribute, FloatAttribute, StringAttribute, BoolAttribute, ListAttribute, DictAttribute
 
 
 # Used to initialize entities with data for condition testing purposes
@@ -26,9 +27,10 @@ if __name__ == '__main__':
     # Initialize full metamodel
     metamodel = metamodel_from_file('lang/full_metamodel.tx', classes=[Entity, Attribute, IntAttribute, FloatAttribute,
                                                                        StringAttribute, BoolAttribute, ListAttribute,
-                                                                       Broker, MQTTBroker, AMQPBroker, RedisBroker,
-                                                                       BrokerAuthPlain, Automation, Action, IntAction,
-                                                                       FloatAction, StringAction, BoolAction, List])
+                                                                       DictAttribute, Broker, MQTTBroker, AMQPBroker,
+                                                                       RedisBroker, BrokerAuthPlain, Automation, Action,
+                                                                       IntAction, FloatAction, StringAction, BoolAction,
+                                                                       List, Dict])
 
     # Initialize full model
     model = metamodel.model_from_file('config/example.full_metamodel')
