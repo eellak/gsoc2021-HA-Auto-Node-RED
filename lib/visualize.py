@@ -1,5 +1,5 @@
 from textx import textx_isinstance
-from lib.automation import Dict, List
+from .automation import Dict, List
 
 # List of primitive types that can be directly printed
 primitives = (int, float, str, bool)

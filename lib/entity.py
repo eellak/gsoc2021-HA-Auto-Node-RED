@@ -1,6 +1,6 @@
 from commlib.endpoints import endpoint_factory, EndpointType, TransportType
 
-from lib.broker import MQTTBroker, AMQPBroker, RedisBroker
+from .broker import MQTTBroker, AMQPBroker, RedisBroker
 
 # Broker classes and their corresponding TransportType
 broker_tt = {
