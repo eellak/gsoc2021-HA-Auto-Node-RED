@@ -1,5 +1,15 @@
-from textx import textx_isinstance
-from .automation import Dict, List
+# NOTE: If you want to run visualize directly, since it is considered part of the lib package, you can execute
+# "python -m lib.visualize". The -m tells Python to load it as a module, not as the top-level script.
+# Example call: python -m lib.visualize visualize lang\full_metamodel.tx config\example.full_metamodel gpsAutomation --out gpsAutomation.pu
+
+import click
+
+from textx import textx_isinstance, metamodel_from_file
+
+from .automation import Automation, List, Dict, Action, IntAction, FloatAction, StringAction, BoolAction
+from .broker import Broker, MQTTBroker, AMQPBroker, RedisBroker, BrokerAuthPlain
+from .entity import Entity, Attribute, \
+    IntAttribute, FloatAttribute, StringAttribute, BoolAttribute, ListAttribute, DictAttribute
 
 # List of primitive types that can be directly printed
 primitives = (int, float, str, bool)
@@ -39,12 +49,16 @@ def visit_node(node, depth, metamodel, file_writer):
 
 
 # Visualizes Automation Conditions and Actions using PlantUML
-def visualize_automation(metamodel, automation):
+def visualize_automation(metamodel, automation, out_dir=""):
     # Initial MindMap depth
     depth = 1
 
+    # Set default output file directory
+    if out_dir == "":
+        out_dir = f"automation_{automation.name}.pu"
+
     # Open output file and write
-    with open(f'automation_{automation.name}.pu', 'w') as f:
+    with open(out_dir, 'w') as f:
         # Write MindMap model start
         f.write('@startmindmap\n')
         # Write center node
@@ -58,3 +72,57 @@ def visualize_automation(metamodel, automation):
         f.write("@endmindmap")
         # Close file writer
         f.close()
+
+
+# Main CLI Command Group
+@click.group()
+def cli():
+    pass
+
+
+# Visualization
+@click.command()
+@click.argument('metamodel_in')
+@click.argument('model_in')
+@click.argument('automation_name')
+@click.option('--out', default="", help="output file")
+def visualize(metamodel_in, model_in, automation_name, out):
+    # Print message
+    click.echo(
+        f"Using {metamodel_in} metamodel to visualize {automation_name} automation in {model_in} model. Saving to: {out}")
+
+    # Initialize full metamodel
+    metamodel = metamodel_from_file(metamodel_in, classes=[Entity, Attribute, IntAttribute, FloatAttribute,
+                                                           StringAttribute, BoolAttribute, ListAttribute,
+                                                           DictAttribute, Broker, MQTTBroker, AMQPBroker,
+                                                           RedisBroker, BrokerAuthPlain, Automation, Action,
+                                                           IntAction, FloatAction, StringAction, BoolAction,
+                                                           List, Dict])
+
+    #TODO: This tool won't work offline since during Model instantiation, Entities are constructed which construct their
+    # own publishers and subscribers for broker communications. We can fix this perhaps using subclassing, adding a
+    # switch in __init()__ or having publisher and subscriber instantiation done outside __init()__
+    # Initialize full model
+    model = metamodel.model_from_file(model_in)
+
+    # Build entities dictionary in model. Needed for evaluating conditions
+    model.entities_dict = {entity.name: entity for entity in model.entities}
+
+    # Build entities dictionary in model. Needed for browsing automations
+    model.automations_dict = {automation.name: automation for automation in model.automations}
+
+    # Build Conditions for all Automations
+    for automation in model.automations:
+        automation.build_condition()
+        print(f"{automation.name} condition:\n{automation.condition.cond_lambda}\n")
+
+    # Call visualize_automation() to visualize selected automation
+    visualize_automation(metamodel=metamodel, automation=model.automations_dict[automation_name], out_dir=out)
+
+
+# Add visualize command to
+cli.add_command(visualize)
+
+# CLI Utility Entry Point
+if __name__ == '__main__':
+    cli()
