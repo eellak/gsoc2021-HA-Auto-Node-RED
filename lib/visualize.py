@@ -18,6 +18,13 @@ custom_classes = (Dict, List)
 
 
 def print_operand(node):
+    """
+    Returns how a node from the Automation Condition abstract syntax tree should be printed during the construction of
+    the condition's python expression. If it's a primitive, a dictionary or a list, it is simply printed out as a
+    literal. If it is an Entity Attribute, it is printed out as "entity_name.attribute_name".
+    :param node: A node from the Automation Condition abstract syntax tree.
+    :return: The node printed out the correct way for building an Automation's Condition python expression.
+    """
     if type(node) in primitives or type(node) in custom_classes:
         return node
     else:
@@ -26,6 +33,15 @@ def print_operand(node):
 
 # Pre-Order traversal of Condition tree
 def visit_node(node, depth, metamodel, file_writer):
+    """
+    Function called recursively to visit the Automation's Condition abstract syntax tree using pre-order traversal
+    to create a PlantUML MindMap of the Automation's Condition.
+    :param node: Node in the Abstract Syntax Tree
+    :param depth: Current tree level depth
+    :param metamodel: The metamodel used to parse the model and it's Automations
+    :param file_writer: File writer used to write to the PlantUML MindMap
+    :return:
+    """
     # Increase depth
     depth += 1
 
@@ -33,6 +49,7 @@ def visit_node(node, depth, metamodel, file_writer):
     file_writer.write(f"{'-' * depth} {node.operator}\n")
 
     # If we are in a ConditionGroup node, recursively visit the left and right sides
+    # TODO: Probably passing around metamodel as an argument just for accessing the ConditionGroup class is not best
     if textx_isinstance(node, metamodel.namespaces['automation']['ConditionGroup']):
 
         # Visit left node
@@ -50,6 +67,14 @@ def visit_node(node, depth, metamodel, file_writer):
 
 # Visualizes Automation Conditions and Actions using PlantUML
 def visualize_automation(metamodel, automation, out_dir=""):
+    """
+    Creates a PlantUML MindMap visualization of the desired Automation.
+    :param metamodel: Metamodel used to parse the Automation
+    :param automation: The Automation to be visualized
+    :param out_dir: File directory for saving the Automation visualization. e.g: 'visualization/automation.pu'
+        (optional)
+    :return:
+    """
     # Initial MindMap depth
     depth = 1
 
@@ -87,6 +112,14 @@ def cli():
 @click.argument('automation_name')
 @click.option('--out', default="", help="output file")
 def visualize(metamodel_in, model_in, automation_name, out):
+    """
+    Function used to implement the visualization's tool standalone Command Line Utility. Calls visualize_automation().
+    :param metamodel_in: Metamodel used to parse the model.
+    :param model_in: Model containing the Automation to be visualized.
+    :param automation_name: Automation's name.
+    :param out: File directory for saving the Automation visualization. e.g: 'visualization/automation.pu'
+    :return:
+    """
     # Print message
     click.echo(
         f"Using {metamodel_in} metamodel to visualize {automation_name} automation in {model_in} model. Saving to: {out}")
@@ -99,9 +132,9 @@ def visualize(metamodel_in, model_in, automation_name, out):
                                                            IntAction, FloatAction, StringAction, BoolAction,
                                                            List, Dict])
 
-    #TODO: This tool won't work offline since during Model instantiation, Entities are constructed which construct their
-    # own publishers and subscribers for broker communications. We can fix this perhaps using subclassing, adding a
-    # switch in __init()__ or having publisher and subscriber instantiation done outside __init()__
+    #TODO: The CLI tool won't work offline since during Model instantiation Entities are constructed which construct
+    # their own publishers and subscribers for broker communications. We can fix this perhaps using subclassing, adding
+    # a switch in __init()__ or having publisher and subscriber instantiation done outside __init()__
     # Initialize full model
     model = metamodel.model_from_file(model_in)
 
