@@ -98,25 +98,28 @@ class Automation:
     # Evaluate the Automation's conditions and run the actions
     def evaluate(self):
         """
-            Evaluates the Automation's conditions if enabled is True and runs the actions.
-        :return:
+            Evaluates the Automation's conditions if enabled is True and returns the result and the activation message.
+        :return: (Boolean showing the evaluation's success, A string message regarding evaluation's status)
         """
         # Check if condition has been build using build_expression
         if self.enabled:
             if hasattr(self.condition, 'cond_lambda'):
                 # Evaluate condition providing the textX model as global context for evaluation
                 if eval(self.condition.cond_lambda, {'model': self.parent}):
-                    self.trigger()
-                    return f"{self.name}: triggered."
+                    return True, f"{self.name}: triggered."
                 else:
-                    return f"{self.name}: not triggered."
+                    return False, f"{self.name}: not triggered."
             else:
-                return f"{self.name}: condition not built. Please build using build_expression."
+                return False, f"{self.name}: condition not built. Please build using build_expression."
         else:
-            return f"{self.name}: Automation disabled."
+            return False, f"{self.name}: Automation disabled."
 
     # Run Automation's actions
     def trigger(self):
+        """
+        Runs the Automation's actions.
+        :return:
+        """
         # If continuous is false, disable automation until it is manually re-enabled
         if not self.continuous:
             self.enabled = False
