@@ -1,0 +1,3 @@
+[submodule "node-red-contrib-ha-auto"]
+	path = node-red-contrib-ha-auto
+	url = https://github.com/CedArctic/node-red-contrib-ha-auto
