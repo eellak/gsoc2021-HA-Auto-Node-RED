@@ -71,6 +71,7 @@ automation:
     name: AdjustThermostat
     condition: ((temperature_sensor.temperature < 10) AND (status_sensor_2.status == "At Home")) AND (thermostat.on NOT True)
     enabled: true
+    continuous: true
     actions:
         - thermostat.temperature: 20.0
         - thermostat.on: True
@@ -79,6 +80,7 @@ automation:
     name: LocationTest
     condition: (location.location == [2, 2]) AND (thermostat.on NOT True)
     enabled: true
+    continuous: true
     actions:
         - thermostat.on: True
 
@@ -86,5 +88,6 @@ automation:
     name: gpsAutomation
     condition: gps.coordinates == {'x': 10, 'y': 12}
     enabled: true
+    continuous: true
     actions:
         - thermostat.on: True
