@@ -1,8 +1,0 @@
-# MQTT Configuration
-mqtt:
-  broker: "localhost"
-
-# MQTT Eventstream configuration
-mqtt_eventstream:
-  publish_topic: MqttEventStreamOut
-  subscribe_topic: MqttEventStreamIn
