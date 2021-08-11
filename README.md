@@ -45,12 +45,12 @@ HA-Auto supports Brokers using the MQTT, AMQP and Redis message broker protocols
 You can configure a Broker in HA-Auto using the syntax in the following example:
 ```yaml
 mqtt:
-	name: upstairs_broker
-	host: "192.168.1.5"
-	port: 1883
-	credentials:
-		username: "my_username"
-		password: "my_password"
+    name: upstairs_broker
+    host: "192.168.1.5"
+    port: 1883
+    credentials:
+        username: "my_username"
+        password: "my_password"
 ```
 - **type:** The first line can be `mqtt`, `amqp` or `redis` according to the Broker type
    - **host:** Host IP address or hostname for the Broker
@@ -71,18 +71,18 @@ Attributes are what define the structure and the type of information in the mess
 You can configure an Entity in HA-Auto using the syntax in the following example:
 ```yaml
 entity:
-	name: robot_cleaner
-	topic: "bedroom.robot_cleaner"
-	broker: upstairs_broker
-	attributes:
-		- battery: float,
-		- cleaning_mode: string,
-		- on: bool,
-		- destinations: list,
-		- location: {
-			- x: int,
-			- y: int
-		}
+    name: robot_cleaner
+    topic: "bedroom.robot_cleaner"
+    broker: upstairs_broker
+    attributes:
+        - battery: float,
+        - cleaning_mode: string,
+        - on: bool,
+        - destinations: list,
+        - location: {
+            - x: int,
+            - y: int
+        }
 ```
 
 - **name:** The name for the Entity. Should start with a letter, can contain only letters, numbers and underscores.
@@ -99,14 +99,14 @@ Actions are performed by sending messages to Entities.
 You can configure an Automation in HA-Auto using the syntax in the following example:
 ```yaml
 automation:
-	name: start_aircondition
-	condition: ((thermometer.temperature > 32) AND (humidity.humidity > 30)) AND (aircondition.on NOT true)
-	enabled: true
-	continuous: false
-	actions:
-		- aircondition.temperature:  25.0
-		- aircondition.mode:  "cool"
-		- aircondition.on:  true
+    name: start_aircondition
+    condition: ((thermometer.temperature > 32) AND (humidity.humidity > 30)) AND (aircondition.on NOT true)
+    enabled: true
+    continuous: false
+    actions:
+        - aircondition.temperature:  25.0
+        - aircondition.mode:  "cool"
+        - aircondition.on:  true
 ```
 - **name:** The name for the Automation. Should start with a letter, can contain only letters, numbers and underscores.
 - **condition:** The condition used to determine if actions should be run. 
