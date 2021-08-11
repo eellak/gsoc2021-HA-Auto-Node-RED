@@ -6,10 +6,10 @@ in each of them. All sensors and actuators send and receive information through 
 structured form. 
 
 ![Smart Home Depiction](smart_home.png)
+
 Image by AUTh SoftEng team. 
 
 ## Project Files
 - smart_home.png: Top-Down depiction of home with sensors and actuators
-- home_utilities.py: Python utilities used to simulate home devices by sending structured messages to the broker
-- smart_home.full_metamodel: File containing the full metamodel with Entities, Brokers and Automations for the Smart
+- smart_home.model: File containing the Configuration Model with Entities, Brokers and Automations for the Smart
 Home Environment
