@@ -15,8 +15,7 @@ from lib.entity import Entity, Attribute, \
 
 
 # === Node-RED integration settings ===
-# A Run Mode flag. Set to "MQTT" for the Node-RED integration, or to "Local" for a local config
-RUN_MODE = "MQTT"
+from config.config import RUN_MODE
 
 # Import the configuration for the broker used to receive the HA-Auto configuration model
 if RUN_MODE != "Local":
