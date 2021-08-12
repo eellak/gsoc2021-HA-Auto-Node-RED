@@ -124,7 +124,7 @@ automation:
   writing conditions.
 - **enabled:** Whether the Automation should be run or not.
 - **continuous:** Whether the Automation should automatically remain enabled once its actions have been executed.
-- **condition:** The actions that should be run once the condition is met. 
+- **actions:** The actions that should be run once the condition is met. 
   See the wiki [Automation page](https://github.com/eellak/gsoc2021-HA-Auto-Node-RED/wiki) for more information on 
   writing actions.
 
