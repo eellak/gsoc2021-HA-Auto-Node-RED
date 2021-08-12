@@ -13,6 +13,16 @@ To make HA-Auto even easier to use, the language has been integrated in Node-RED
 For the HA-Auto Node-RED integration see the 
 [node-red-contrib-ha-auto](https://github.com/CedArctic/node-red-contrib-ha-auto) repository.
 
+## Overview
+The diagram bellow illustrates how HA-Auto works. The HA-Auto Backend, which is hosted in this repository, 
+reads the HA-Auto DSL Metamodel and uses it to parse a Configuration Model which contains all the details specific to 
+the environment of a user. The Configuration Model can be either written directly in textual form, or generated using 
+the HA-Auto Node-RED integration inside the Node-RED low code programming environment. After that, the HA-Auto Backend
+interprets the Configuration Model to execute Automations. This is done by exchanging information with devices 
+(Entities) in the user environment through message Brokers.
+
+![HA-Auto Overview Diagram](overview.jpg)
+
 ## Installation
 Installing HA-Auto is easy. Make sure you have [Python 3](https://www.python.org/) and then follow these steps:
 1. Download the latest release zip [here](https://github.com/eellak/gsoc2021-HA-Auto-Node-RED/releases)
@@ -127,6 +137,7 @@ Documentation can be found in the [wiki](https://github.com/eellak/gsoc2021-HA-A
 Also, the code in this project contains thorough documentation to ensure readability and understandability.
 
 ## Project Structure
+
 - [config](config): Contains the HA-Auto configuration files and models.
 - [config/config.py](config/config.py): Used to configure the HA-Auto Run Mode, `Local` or `MQTT`, and in the case of 
   `MQTT` the parameters of the broker used to communicate with the Node-RED integration.
