@@ -8,8 +8,8 @@ from textx import textx_isinstance, metamodel_from_file
 
 from .automation import Automation, List, Dict, Action, IntAction, FloatAction, StringAction, BoolAction
 from .broker import Broker, MQTTBroker, AMQPBroker, RedisBroker, BrokerAuthPlain
-from .entity import Entity, Attribute, \
-    IntAttribute, FloatAttribute, StringAttribute, BoolAttribute, ListAttribute, DictAttribute
+from .entity import Attribute, IntAttribute, FloatAttribute, StringAttribute, BoolAttribute, ListAttribute, \
+    DictAttribute
 
 # List of primitive types that can be directly printed
 primitives = (int, float, str, bool)
@@ -124,17 +124,15 @@ def visualize(metamodel_in, model_in, automation_name, out):
     click.echo(
         f"Using {metamodel_in} metamodel to visualize {automation_name} automation in {model_in} model. Saving to: {out}")
 
-    # Initialize full metamodel
-    metamodel = metamodel_from_file(metamodel_in, classes=[Entity, Attribute, IntAttribute, FloatAttribute,
+    # Initialize full metamodel. Custom Entity class is not needed and wouldn't allow for offline execution
+    # because the constructor starts a broker publisher and subscriber
+    metamodel = metamodel_from_file(metamodel_in, classes=[Attribute, IntAttribute, FloatAttribute,
                                                            StringAttribute, BoolAttribute, ListAttribute,
                                                            DictAttribute, Broker, MQTTBroker, AMQPBroker,
                                                            RedisBroker, BrokerAuthPlain, Automation, Action,
                                                            IntAction, FloatAction, StringAction, BoolAction,
                                                            List, Dict])
 
-    #TODO: The CLI tool won't work offline since during Model instantiation Entities are constructed which construct
-    # their own publishers and subscribers for broker communications. We can fix this perhaps using subclassing, adding
-    # a switch in __init()__ or having publisher and subscriber instantiation done outside __init()__
     # Initialize full model
     model = metamodel.model_from_file(model_in)
 
